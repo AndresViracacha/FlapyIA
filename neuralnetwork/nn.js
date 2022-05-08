@@ -8,15 +8,14 @@ class ActivationFunction {
 }
 
 let sigmoid = new ActivationFunction(
-  x => 1 / (1 + Math.exp(-x)),
-  y => y * (1 - y)
+  (x) => 1 / (1 + Math.exp(-x)),
+  (y) => y * (1 - y)
 );
 
 let tanh = new ActivationFunction(
-  x => Math.tanh(x),
-  y => 1 - (y * y)
+  (x) => Math.tanh(x),
+  (y) => 1 - y * y
 );
-
 
 class NeuralNetwork {
   // TODO: document what a, b, c are
@@ -50,12 +49,9 @@ class NeuralNetwork {
     // TODO: copy these as well
     this.setLearningRate();
     this.setActivationFunction();
-
-
   }
 
   predict(input_array) {
-
     // Generating the Hidden Outputs
     let inputs = Matrix.fromArray(input_array);
     let hidden = Matrix.multiply(this.weights_ih, inputs);
@@ -106,7 +102,6 @@ class NeuralNetwork {
     gradients.multiply(output_errors);
     gradients.multiply(this.learning_rate);
 
-
     // Calculate deltas
     let hidden_T = Matrix.transpose(hidden);
     let weight_ho_deltas = Matrix.multiply(gradients, hidden_T);
@@ -143,10 +138,14 @@ class NeuralNetwork {
   }
 
   static deserialize(data) {
-    if (typeof data == 'string') {
+    if (typeof data == "string") {
       data = JSON.parse(data);
     }
-    let nn = new NeuralNetwork(data.input_nodes, data.hidden_nodes, data.output_nodes);
+    let nn = new NeuralNetwork(
+      data.input_nodes,
+      data.hidden_nodes,
+      data.output_nodes
+    );
     nn.weights_ih = Matrix.deserialize(data.weights_ih);
     nn.weights_ho = Matrix.deserialize(data.weights_ho);
     nn.bias_h = Matrix.deserialize(data.bias_h);
@@ -154,7 +153,6 @@ class NeuralNetwork {
     nn.learning_rate = data.learning_rate;
     return nn;
   }
-
 
   // Adding function for neuro-evolution
   copy() {
@@ -175,7 +173,26 @@ class NeuralNetwork {
     this.bias_h.map(mutate);
     this.bias_o.map(mutate);
   }
-
-
-
 }
+var randomGaussian = function (mean) {
+  var sd =
+    arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  var y1, x1, x2, w;
+  if (this._gaussian_previous) {
+    y1 = y2;
+    this._gaussian_previous = false;
+  } else {
+    do {
+      x1 = Math.random() * 2 - 1;
+      x2 = Math.random() * 2 - 1;
+      w = x1 * x1 + x2 * x2;
+    } while (w >= 1);
+    w = Math.sqrt((-2 * Math.log(w)) / w);
+    y1 = x1 * w;
+    y2 = x2 * w;
+    this._gaussian_previous = true;
+  }
+
+  var m = mean || 0;
+  return y1 * sd + m;
+};

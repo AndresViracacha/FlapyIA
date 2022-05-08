@@ -1,4 +1,4 @@
-const TOTAL = 500;
+const TOTAL = 1500;
 let birds = [];
 let savedBirds = [];
 let pipes = [];
@@ -33,7 +33,6 @@ document.addEventListener("keydown", () => {
 
 for (let i = 0; i < TOTAL; i++) {
   birds[i] = new Bird();
-  birds[i].crear();
 }
 
 function animate() {
@@ -53,10 +52,29 @@ function animate() {
   }
   counter++;
 
+  for (let i = birds.length - 1; i >= 0; i--) {
+    if (birds[i].offScreen()) {
+      scene.remove(birds[i].cube);
+      savedBirds.push(birds.splice(i, 1)[0]);
+    }
+  }
+
   for (let bird of birds) {
     bird.think(pipes);
     bird.update();
   }
+
+  if (birds.length === 0) {
+    counter = 0;
+    nextGeneration();
+    for (let i = 0; i < pipes.length; i++) {
+      scene.remove(pipes[i].cube);
+      scene.remove(pipes[i].cube2);
+    }
+    pipes = [];
+  }
+  console.log(birds.length);
+
   renderer.render(scene, camera);
 }
 

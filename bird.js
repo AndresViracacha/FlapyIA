@@ -24,6 +24,7 @@ class Bird {
     } else {
       this.brain = new NeuralNetwork(5, 8, 2);
     }
+    this.crear();
   }
   crear() {
     scene.add(this.cube);
@@ -56,6 +57,9 @@ class Bird {
     if (output[0] > output[1]) {
       this.up();
     }
+  }
+  mutate() {
+    this.brain.mutate(0.1);
   }
   hit() {
     var intersects = this.raycast.intersectObjects(scene.children);
