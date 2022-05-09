@@ -34,7 +34,7 @@ var ax = 1;
 function animate() {
   requestAnimationFrame(animate);
   for (let n = 0; n < ax; n++) {
-    if (counter % 100 == 0) {
+    if (counter % 75 == 0) {
       pipes.push(new Pipe());
     }
 
