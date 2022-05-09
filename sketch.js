@@ -1,4 +1,4 @@
-const TOTAL = 1500;
+const TOTAL = 500;
 let birds = [];
 let savedBirds = [];
 let pipes = [];
@@ -27,53 +27,54 @@ cube.position.y = cube.position.y + cube.geometry.parameters.height / 2;
 camera.position.z = 100;
 camera.position.y = 50;
 
-document.addEventListener("keydown", () => {
-  a.up();
-});
-
 for (let i = 0; i < TOTAL; i++) {
   birds[i] = new Bird();
 }
-
+var ax = 1;
 function animate() {
   requestAnimationFrame(animate);
+  for (let n = 0; n < ax; n++) {
+    if (counter % 75 == 0) {
+      pipes.push(new Pipe());
+    }
 
-  if (counter % 75 == 0) {
-    pipes.push(new Pipe());
-  }
+    for (let i = pipes.length - 1; i >= 0; i--) {
+      pipes[i].update();
+      if (pipes[i].offscreen()) {
+        scene.remove(pipes[i].cube);
+        scene.remove(pipes[i].cube2);
+        pipes.splice(i, 1);
+      }
+    }
 
-  for (let i = pipes.length - 1; i >= 0; i--) {
-    pipes[i].update();
-    if (pipes[i].offscreen()) {
-      scene.remove(pipes[i].cube);
-      scene.remove(pipes[i].cube2);
-      pipes.splice(i, 1);
+    counter++;
+
+    for (let i = birds.length - 1; i >= 0; i--) {
+      if (birds[i].hit()) {
+        scene.remove(birds[i + 1]);
+        savedBirds.push(birds.splice(i, 1)[0]);
+      }
+      if (birds[i].offScreen()) {
+        scene.remove(birds[i].cube);
+        savedBirds.push(birds.splice(i, 1)[0]);
+      }
+    }
+
+    for (let bird of birds) {
+      bird.think(pipes);
+      bird.update();
+    }
+
+    if (birds.length === 0) {
+      counter = 0;
+      nextGeneration();
+      for (let i = 0; i < pipes.length; i++) {
+        scene.remove(pipes[i].cube);
+        scene.remove(pipes[i].cube2);
+      }
+      pipes = [];
     }
   }
-  counter++;
-
-  for (let i = birds.length - 1; i >= 0; i--) {
-    if (birds[i].offScreen()) {
-      scene.remove(birds[i].cube);
-      savedBirds.push(birds.splice(i, 1)[0]);
-    }
-  }
-
-  for (let bird of birds) {
-    bird.think(pipes);
-    bird.update();
-  }
-
-  if (birds.length === 0) {
-    counter = 0;
-    nextGeneration();
-    for (let i = 0; i < pipes.length; i++) {
-      scene.remove(pipes[i].cube);
-      scene.remove(pipes[i].cube2);
-    }
-    pipes = [];
-  }
-  console.log(birds.length);
 
   renderer.render(scene, camera);
 }

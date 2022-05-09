@@ -9,7 +9,7 @@ class Bird {
 
     this.score = 0;
     this.fitness = 0;
-    this.geometry = new THREE.BoxGeometry(5, 5, 5);
+    this.geometry = new THREE.PlaneGeometry(1, 1);
     this.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     this.cube = new THREE.Mesh(this.geometry, this.material);
     this.cube.position.y = this.y;
@@ -59,12 +59,13 @@ class Bird {
     }
   }
   mutate() {
-    this.brain.mutate(0.1);
+    this.brain.mutate(0.2);
   }
   hit() {
     var intersects = this.raycast.intersectObjects(scene.children);
     for (let i = 0; i < intersects.length; i++) {
-      if ((intersects[i].object.name = "pipe")) {
+      if (intersects.length > 0) {
+        console.log("choco");
         return true;
       }
     }
