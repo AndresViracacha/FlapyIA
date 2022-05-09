@@ -51,7 +51,7 @@ function animate() {
 
     for (let i = birds.length - 1; i >= 0; i--) {
       if (birds[i].hit()) {
-        scene.remove(birds[i + 1]);
+        scene.remove(birds[i].cube);
         savedBirds.push(birds.splice(i, 1)[0]);
       }
       if (birds[i].offScreen()) {
